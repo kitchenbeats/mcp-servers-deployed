@@ -15,7 +15,7 @@ COPY test/ ./test/
 RUN pip install uv && uv pip install --system -e .
 
 # Install FastMCP wrapper dependencies
-RUN pip install aiohttp
+RUN pip install flask flask-cors
 
 # Copy FastMCP wrapper
 COPY fastmcp-wrapper/ ./fastmcp-wrapper/
