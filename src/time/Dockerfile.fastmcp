@@ -1,5 +1,5 @@
-# FastMCP Wrapper Dockerfile for MCP Time Server (Python)
-# This wraps the original Python server WITHOUT modifying it
+# FastMCP v2 Proxy Wrapper for MCP Time Server (Python)
+# Uses FastMCP's built-in proxy to wrap the original server WITHOUT modifying it
 
 FROM python:3.12-slim
 
@@ -14,15 +14,21 @@ COPY test/ ./test/
 # Install the original server dependencies
 RUN pip install uv && uv pip install --system -e .
 
-# Install FastMCP wrapper dependencies
-RUN pip install flask flask-cors
+# Install FastMCP v2 for proxy functionality
+RUN pip install fastmcp
 
-# Copy FastMCP wrapper
+# Copy FastMCP proxy wrapper
 COPY fastmcp-wrapper/ ./fastmcp-wrapper/
 
-# Make wrapper executable
-RUN chmod +x /app/fastmcp-wrapper/server.py
+# Set environment for HTTP transport
+ENV MCP_TRANSPORT=http
+ENV PORT=8080
 
-# Set the entrypoint to our wrapper
+# Make wrapper executable
+RUN chmod +x /app/fastmcp-wrapper/proxy_server.py
+
+# Expose port
 EXPOSE 8080
-CMD ["python", "/app/fastmcp-wrapper/server.py"]
+
+# Run the FastMCP proxy
+CMD ["python", "/app/fastmcp-wrapper/proxy_server.py"]
